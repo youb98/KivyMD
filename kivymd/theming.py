@@ -839,12 +839,34 @@ class ThemeManager(EventDispatcher):
         else:
             return self.theme_style
 
-    def _get_bg_darkest(self, opposite: bool = False) -> list:
+    def _get_bg_color(self, name: str, opposite: bool = False) -> list:
+        """
+        Returns the ``rgba`` value of the ``name`` background color from the
+        color palette for the current (or opposite) theme style.
+        """
+
+        theme_style = self._get_theme_style(opposite)
+        return get_color_from_hex(self.colors[theme_style][name])
+
+    def _get_monochrome_color(
+        self, light_alpha: float, dark_alpha: float, opposite: bool = False
+    ) -> list:
+        """
+        Returns a black (``Light`` theme) or white (``Dark`` theme) color with
+        the alpha value matching the current (or opposite) theme style.
+        """
+
         theme_style = self._get_theme_style(opposite)
         if theme_style == "Light":
-            return get_color_from_hex(self.colors["Light"]["StatusBar"])
-        elif theme_style == "Dark":
-            return get_color_from_hex(self.colors["Dark"]["StatusBar"])
+            color = get_color_from_hex("000000")
+            color[3] = light_alpha
+        else:
+            color = get_color_from_hex("FFFFFF")
+            color[3] = dark_alpha
+        return color
+
+    def _get_bg_darkest(self, opposite: bool = False) -> list:
+        return self._get_bg_color("StatusBar", opposite)
 
     bg_darkest = AliasProperty(_get_bg_darkest, bind=["theme_style"])
     """
@@ -942,11 +964,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_bg_dark(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            return get_color_from_hex(self.colors["Light"]["AppBar"])
-        elif theme_style == "Dark":
-            return get_color_from_hex(self.colors["Dark"]["AppBar"])
+        return self._get_bg_color("AppBar", opposite)
 
     bg_dark = AliasProperty(_get_bg_dark, bind=["theme_style"])
     """
@@ -971,11 +989,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_bg_normal(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            return get_color_from_hex(self.colors["Light"]["Background"])
-        elif theme_style == "Dark":
-            return get_color_from_hex(self.colors["Dark"]["Background"])
+        return self._get_bg_color("Background", opposite)
 
     bg_normal = AliasProperty(_get_bg_normal, bind=["theme_style"])
     """
@@ -1000,11 +1014,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_bg_light(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            return get_color_from_hex(self.colors["Light"]["CardsDialogs"])
-        elif theme_style == "Dark":
-            return get_color_from_hex(self.colors["Dark"]["CardsDialogs"])
+        return self._get_bg_color("CardsDialogs", opposite)
 
     bg_light = AliasProperty(_get_bg_light, bind=["theme_style"])
     """"
@@ -1030,13 +1040,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_divider_color(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            color = get_color_from_hex("000000")
-        elif theme_style == "Dark":
-            color = get_color_from_hex("FFFFFF")
-        color[3] = 0.12
-        return color
+        return self._get_monochrome_color(0.12, 0.12, opposite)
 
     divider_color = AliasProperty(_get_divider_color, bind=["theme_style"])
     """
@@ -1103,13 +1107,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_text_color(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            color = get_color_from_hex("000000")
-            color[3] = 0.87
-        elif theme_style == "Dark":
-            color = get_color_from_hex("FFFFFF")
-        return color
+        return self._get_monochrome_color(0.87, 1.0, opposite)
 
     text_color = AliasProperty(_get_text_color, bind=["theme_style"])
     """
@@ -1135,14 +1133,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_secondary_text_color(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            color = get_color_from_hex("000000")
-            color[3] = 0.54
-        elif theme_style == "Dark":
-            color = get_color_from_hex("FFFFFF")
-            color[3] = 0.70
-        return color
+        return self._get_monochrome_color(0.54, 0.70, opposite)
 
     secondary_text_color = AliasProperty(
         _get_secondary_text_color, bind=["theme_style"]
@@ -1172,13 +1163,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_icon_color(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            color = get_color_from_hex("000000")
-            color[3] = 0.54
-        elif theme_style == "Dark":
-            color = get_color_from_hex("FFFFFF")
-        return color
+        return self._get_monochrome_color(0.54, 1.0, opposite)
 
     icon_color = AliasProperty(_get_icon_color, bind=["theme_style"])
     """
@@ -1204,14 +1189,7 @@ class ThemeManager(EventDispatcher):
     """
 
     def _get_disabled_hint_text_color(self, opposite: bool = False) -> list:
-        theme_style = self._get_theme_style(opposite)
-        if theme_style == "Light":
-            color = get_color_from_hex("000000")
-            color[3] = 0.38
-        elif theme_style == "Dark":
-            color = get_color_from_hex("FFFFFF")
-            color[3] = 0.50
-        return color
+        return self._get_monochrome_color(0.38, 0.50, opposite)
 
     disabled_hint_text_color = AliasProperty(
         _get_disabled_hint_text_color, bind=["theme_style"]
