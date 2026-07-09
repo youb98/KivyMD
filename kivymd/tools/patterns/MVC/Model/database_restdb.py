@@ -36,8 +36,14 @@ class DataBase:
     name = "RestDB"
 
     def __init__(self):
-        database_url = "https://restdbio-5498.restdb.io"
-        api_key = "7ce258d66f919d3a891d1166558765f0b4dbd"
+        # Read credentials from the environment instead of hardcoding them.
+        # Set RESTDB_API_URL and RESTDB_API_KEY before running the app, e.g.:
+        #     export RESTDB_API_URL="https://your-db.restdb.io"
+        #     export RESTDB_API_KEY="your-secret-api-key"
+        database_url = os.environ.get(
+            "RESTDB_API_URL", "https://restdbio-5498.restdb.io"
+        )
+        api_key = os.environ.get("RESTDB_API_KEY", "")
 
         self.HEADERS = {"x-apikey": api_key, "Content-Type": "application/json"}
         # Address for file collections.
