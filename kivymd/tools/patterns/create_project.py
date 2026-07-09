@@ -91,13 +91,17 @@ the database restdb.io.
 
     class DataBase:
         def __init__(self):
-            database_url = "https://restdbio-5498.restdb.io"
-            api_key = "7ce258d66f919d3a891d1166558765f0b4dbd"
+            database_url = os.environ.get(
+                "RESTDB_API_URL", "https://restdbio-5498.restdb.io"
+            )
+            api_key = os.environ.get("RESTDB_API_KEY", "")
 
 .. note::
-    Please note that `database.py` the shell in the `DataBase` class uses the
-    `database_url` and `api_key` parameters on the test database (works only in read mode),
-    so you should use your data for the database.
+    Please note that `database.py` the shell in the `DataBase` class reads the
+    `database_url` and `api_key` parameters from the `RESTDB_API_URL` and
+    `RESTDB_API_KEY` environment variables so that credentials are not
+    hardcoded in the source. Set these environment variables to your own
+    database and API key before running the application.
 
 Create project with hot reload
 ------------------------------
