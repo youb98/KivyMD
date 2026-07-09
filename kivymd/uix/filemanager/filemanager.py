@@ -144,6 +144,7 @@ from kivy import platform
 from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.lang import Builder
+from kivy.logger import Logger
 from kivy.metrics import dp
 from kivy.properties import (
     BooleanProperty,
@@ -650,7 +651,12 @@ class MDFileManager(MDRelativeLayout, ThemableBehavior):
 
             return dirs, files
 
-        except OSError:
+        except OSError as exc:
+            Logger.warning(
+                "MDFileManager: Cannot read the directory '{}': {}".format(
+                    self.current_path, exc
+                )
+            )
             return None, None
 
     def close(self) -> None:
