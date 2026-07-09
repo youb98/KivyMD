@@ -386,7 +386,11 @@ class MDApp(BaseApp):
         try:
             wid.do_layout()
         except Exception:
-            pass
+            Logger.exception(
+                "{}: Error while laying out the reloaded widget".format(
+                    self.appname
+                )
+            )
 
     # State management.
     def apply_state(self, state):

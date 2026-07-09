@@ -15,9 +15,10 @@ def get_connect(func, host="8.8.8.8", port=53, timeout=3):
             socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(
                 (host, port)
             )
-            return func(*args)
-        except Exception:
+        except OSError:
+            # No active Internet connection.
             return False
+        return func(*args)
 
     return wrapped
 
